@@ -1,43 +1,58 @@
+require('dotenv').config();
+
 const express = require('express');
-// const request = require('superagent');
+const request = require('superagent');
 const app = express();
 const darkSky = require('./data/darksky.json');
-const port = 3000;
-const geoData = require('./data/geo.json');
+const port = process.env.PORT || 3000;
+
 
 const cors = require('cors');
 app.use(cors());
 
-// let lat;
-// let lng;
+let lat;
+let lng;
 
-app.get('/location', (req, res) => {
-    // const location = request.query.search;
+app.get('/location', async(req, res, next) => {
+    try {
 
-    // console.log('using location. . . .', location);
+        const location = req.query.search;
+        const URL = (`https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}=${location}&format=json`);
+        console.log(req.query);
+        const cityData = await request.get(URL);
 
-    // update the state of the lat and long for global scope
-    // lat = cityData.geometry.location.lat;
-    // lng = cityData.geometry.location.lng;
+        const firstResult = cityData.body[0];
 
-    const cityData = geoData.results[0];
+        // update the state of the lat and long for global scope
+        lat = firstResult.lat;
+        lng = firstResult.lon;
 
-    res.json(
-        {
-            formatted_query: cityData.formatted_address,
-            latitude: cityData.geometry.location.lat,
-            longitude: cityData.geometry.location.lng
-        });
+        res.json(
+            {
+                formatted_query: firstResult.display_name,
+                latitude: lat,
+                longitude: lng
+            });
+    } catch (err) {
+        next(err);
+    }
 });
 
-app.get('/weather', (req, res) => {
-    const portlandWeather = getWeatherData(/*lat, long*/);
-    res.json(portlandWeather);
+app.get('/weather', (req, res, next) => {
+    try {
 
+        const portlandWeather = getWeatherData(/*lat, lon*/);
 
+        res.json(portlandWeather);
+
+    } catch (err) {
+        next(err);
+    }
 });
 
-const getWeatherData = (/*lat, long*/) => {
+
+// function to map through the weather data
+const getWeatherData = (/*lat, lon*/) => {
     return darkSky.daily.data.map(forecast => {
         return {
             forecast: forecast.summary,
@@ -47,14 +62,15 @@ const getWeatherData = (/*lat, long*/) => {
 };
 
 
+
+app.get('*', (req, res) => res.send('404 error buddy!!!!!!'));
+
+
 // has to go into it's own index.js file for testing later
 app.listen(port, () => {
     console.log('<-----------blast off!---------------->');
 
 });
-
-app.get('*', (req, res) => res.send('404 error buddy!!!!!!'));
-
 
 // module.exports = {
 //     app, };
