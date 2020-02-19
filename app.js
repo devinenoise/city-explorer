@@ -13,7 +13,8 @@ app.use(cors());
 let lat;
 let lng;
 
-app.get('/location', async(req, res, next) => {
+// location route
+app.get('/location', async (req, res, next) => {
     try {
 
         const location = req.query.search;
@@ -37,10 +38,11 @@ app.get('/location', async(req, res, next) => {
     }
 });
 
-app.get('/weather', (req, res, next) => {
+// weather route
+app.get('/weather', async (req, res, next) => {
     try {
 
-        const portlandWeather = getWeatherData(lat, lng);
+        const portlandWeather = await getWeatherData(lat, lng);
 
         res.json(portlandWeather);
 
@@ -50,13 +52,12 @@ app.get('/weather', (req, res, next) => {
 });
 
 
-// function to map through the weather data
-const getWeatherData = async(lat, lng) => {
-    const URL = (`https://api.darksky.net/forecast/${process.env.WEATHER_API_KEY}/${lat},${lng}`); 
-    const weatherData = await request.get(URL);
-    const weather = weatherData.daily.data;
+// function to map through the weather data based on latitude and longitude coordinates
+const getWeatherData = async (lat, lng) => {
+    const URL = (`https://api.darksky.net/forecast/${process.env.WEATHER_API_KEY}/${lat},${lng}`);
+    const weather = await request.get(URL);
 
-    return weather.map(forecast => {
+    return weather.body.daily.data.map(forecast => {
         return {
             forecast: forecast.summary,
             time: new Date(forecast.time * 1000)
@@ -65,7 +66,7 @@ const getWeatherData = async(lat, lng) => {
 };
 
 
-
+// 404 catch all
 app.get('*', (req, res) => res.send('404 error buddy!!!!!!'));
 
 
