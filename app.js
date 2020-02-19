@@ -4,7 +4,10 @@ const app = express();
 const darkSky = require('./data/darksky.json');
 const port = process.env.PORT || 3000;
 const geoData = require('./data/geo.json');
+const cors = require('cors');
 
+
+app.use(cors);
 
 app.get('/location/', (request, respond) => {
     const cityData = geoData.results[0];
@@ -25,7 +28,7 @@ app.get('/weather/', (request, respond) => {
 });
 
 const getWeatherData = (lat, long) => {
-    return weather.daily.data.map(forecast => {
+    return darkSky.daily.data.map(forecast => {
         return {
             forecast: forecast.summary,
             time: new Date(forecast.time)
