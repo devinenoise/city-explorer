@@ -6,14 +6,16 @@ const port = process.env.PORT || 3000;
 const geoData = require('./data/geo.json');
 
 app.get('/weather/', (request, respond) => {
-    const weatherData = darkSky.currently;
+    const forecast = darkSky.daily.data;
+    // const weatherForecast = daily.data.summary;
 
     respond.json({
-        forecast: weatherData.summary,
-        time: weatherData.time
-
+        forecast: forecast.summary,
+        time: forecast.time
     });
+
 });
+
 
 app.get('/location/', (request, respond) => {
     const cityData = geoData.results[0];
@@ -30,15 +32,12 @@ app.get('/location/', (request, respond) => {
 
 // has to go into it's own index.js file for testing later
 app.listen(port, () => {
-    console.log('running.....');
+    console.log('<-----------blast off!---------------->');
 
 });
 
-app.get('*', (req, res) => res.send('404!!!!!!'));
+app.get('*', (req, res) => res.send('404 error buddy!!!!!!'));
 
 
 // module.exports = {
-//     app,
-//     toLocation,
-//     getLatLng
-// };
+//     app, };
