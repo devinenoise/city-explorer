@@ -1,7 +1,7 @@
 const express = require('express');
 const request = require('superagent');
 const app = express();
-const darkSky = require('./data/darksky.json');
+const darksky = require('./data/darksky.json');
 const port = process.env.PORT || 3000;
 const geoData = require('./data/geo.json');
 const cors = require('cors');
@@ -22,13 +22,13 @@ app.get('/location/', (request, respond) => {
 
 app.get('/weather/', (request, respond) => {
     const portlandWeather = getWeatherData(/*lat, long*/);
-    
+
     respond.json(portlandWeather);
-    
+
 });
 
 const getWeatherData = (lat, long) => {
-    return darkSky.daily.data.map(forecast => {
+    return darksky.daily.data.map(forecast => {
         return {
             forecast: forecast.summary,
             time: new Date(forecast.time)
