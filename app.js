@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const request = require('superagent');
 const app = express();
-const darkSky = require('./data/darksky.json');
+// const darkSky = require('./data/darksky.json');
 const port = process.env.PORT || 3000;
 
 
@@ -18,7 +18,6 @@ app.get('/location', async(req, res, next) => {
 
         const location = req.query.search;
         const URL = (`https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}=${location}&format=json`);
-        console.log(req.query);
         const cityData = await request.get(URL);
 
         const firstResult = cityData.body[0];
@@ -41,7 +40,7 @@ app.get('/location', async(req, res, next) => {
 app.get('/weather', (req, res, next) => {
     try {
 
-        const portlandWeather = getWeatherData(/*lat, lon*/);
+        const portlandWeather = getWeatherData(lat, lng);
 
         res.json(portlandWeather);
 
@@ -52,8 +51,12 @@ app.get('/weather', (req, res, next) => {
 
 
 // function to map through the weather data
-const getWeatherData = (/*lat, lon*/) => {
-    return darkSky.daily.data.map(forecast => {
+const getWeatherData = async(lat, lng) => {
+    const URL = (`https://api.darksky.net/forecast/${process.env.WEATHER_API_KEY}/${lat},${lng}`); 
+    const weatherData = await request.get(URL);
+    const weather = weatherData.daily.data;
+
+    return weather.map(forecast => {
         return {
             forecast: forecast.summary,
             time: new Date(forecast.time * 1000)

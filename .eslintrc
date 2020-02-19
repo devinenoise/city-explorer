@@ -11,7 +11,7 @@
     "browser": true,
     "es6": true,
     "node": true,
-    "jest": true,
+    "jest": true
   },
   "globals": {
     "QUnit": false
