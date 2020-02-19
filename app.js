@@ -11,7 +11,7 @@ app.use(cors());
 // let lat;
 // let lng;
 
-app.get('/location/', (req, res) => {
+app.get('/location', (req, res) => {
     // const location = request.query.search;
 
     // console.log('using location. . . .', location);
@@ -30,7 +30,7 @@ app.get('/location/', (req, res) => {
         });
 });
 
-app.get('/weather/', (req, res) => {
+app.get('/weather', (req, res) => {
     const portlandWeather = getWeatherData(/*lat, long*/);
     res.json(portlandWeather);
 
