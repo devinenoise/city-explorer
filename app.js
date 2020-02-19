@@ -33,7 +33,7 @@ app.get('/location/', (req, res) => {
 app.get('/weather/', (req, res) => {
     const portlandWeather = getWeatherData(/*lat, long*/);
     res.json(portlandWeather);
-    
+
 
 });
 
