@@ -9,21 +9,21 @@ const cors = require('cors');
 
 app.use(cors);
 
-let lat;
-let lng;
+// let lat;
+// let lng;
 
-app.get('/location/', (request, respond) => {
-    const location = request.query.search;
+app.get('/location/', (req, res) => {
+    // const location = request.query.search;
 
-console.log('using location. . . .', location);
-    
-// update the state of the lat and long for global scope
-    lat = cityData.geometry.location.lat;
-    lng = cityData.geometry.location.lng;
+    // console.log('using location. . . .', location);
+
+    // update the state of the lat and long for global scope
+    // lat = cityData.geometry.location.lat;
+    // lng = cityData.geometry.location.lng;
 
     const cityData = geoData.results[0];
 
-    respond.json(
+    res.json(
         {
             formatted_query: cityData.formatted_address,
             latitude: cityData.geometry.location.lat,
@@ -31,10 +31,10 @@ console.log('using location. . . .', location);
         });
 });
 
-app.get('/weather/', (request, respond) => {
+app.get('/weather/', (req, res) => {
     const portlandWeather = getWeatherData(/*lat, long*/);
 
-    respond.json(portlandWeather);
+    res.json(portlandWeather);
 
 });
 
