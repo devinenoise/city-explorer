@@ -2,12 +2,11 @@ const express = require('express');
 // const request = require('superagent');
 const app = express();
 const darkSky = require('./data/darksky.json');
-const port = process.env.PORT || 3000;
+const port = 3000;
 const geoData = require('./data/geo.json');
+
 const cors = require('cors');
-
-
-app.use(cors);
+app.use(cors());
 
 // let lat;
 // let lng;
@@ -33,8 +32,8 @@ app.get('/location/', (req, res) => {
 
 app.get('/weather/', (req, res) => {
     const portlandWeather = getWeatherData(/*lat, long*/);
-
     res.json(portlandWeather);
+    
 
 });
 
@@ -46,8 +45,6 @@ const getWeatherData = (/*lat, long*/) => {
         };
     });
 };
-
-
 
 
 // has to go into it's own index.js file for testing later
