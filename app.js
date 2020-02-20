@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const request = require('superagent');
 const app = express();
-const port = process.env.PORT || 3000;
 
 const cors = require('cors');
 app.use(cors());
@@ -145,11 +144,5 @@ const getWeatherData = async (lat, lng) => {
 app.get('*', (req, res) => res.send('404 error buddy!!!!!!'));
 
 
-// has to go into it's own index.js file for testing later
-app.listen(port, () => {
-    console.log('<-----------blast off!---------------->');
-
-});
-
-// module.exports = {
-//     app, };
+module.exports = {
+    app, };
