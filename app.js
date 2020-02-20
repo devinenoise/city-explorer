@@ -4,7 +4,6 @@ const request = require('superagent');
 const app = express();
 const port = process.env.PORT || 3000;
 
-
 const cors = require('cors');
 app.use(cors());
 
@@ -75,8 +74,6 @@ app.get('/reviews', async (req, res) => {
 
 app.get('/events', async (req, res) => {
     try {
-        // lat = 32.746682;
-        // lng = -117.162741;
 
         const eventful = await request
             .get(`http://api.eventful.com/json/events/search?app_key=${process.env.EVENTBRITE_API_KEY}&where=${lat},${lng}&within=25`);
@@ -92,6 +89,36 @@ app.get('/events', async (req, res) => {
         });
 
         res.json(eventStuff);
+
+    } catch (err) {
+        res.status(500).send('Sorry something went wrong, please try again');
+    }
+});
+
+app.get('/trails', async (req, res) => {
+    try {
+
+        const trails = await request
+            .get(`https://www.hikingproject.com/data/get-trails?lat=${lat}&lon=${lng}&maxDistance=10&key=${process.env.TRAIL_API_KEY}`);
+
+
+        // const body = JSON.parse(eventful.text);
+        const trailStuff = trails.body.trails.map(trail => {
+            return {
+                name: trail.name,
+                location: trail.location,
+                length: trail.length,
+                stars: trail.stars,
+                star_votes: trail.starVotes,
+                summary: trail.summary,
+                trail_url: trail.url,
+                conditions: trail.conditionStatus,
+                condition_date: trail.conditionDate.substring(0, 10),
+                condition_time: trail.conditionDate.substring(10),
+            };
+        });
+        console.log(trails);
+        res.json(trailStuff);
 
     } catch (err) {
         res.status(500).send('Sorry something went wrong, please try again');
